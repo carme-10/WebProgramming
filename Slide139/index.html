@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Terminale Js</title>
+    <style>
+        body {
+            height: 100vh;
+            background: linear-gradient(135deg, #77216F, #E95420);
+            margin: 0;
+            padding: 40px;
+            caret-color: transparent;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        #open-new-terminal{
+            display:inline-block;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            font-size: 20px;
+        }
+
+        #min-button{
+            display: inline-block;
+            margin-bottom: 30px;
+            border-radius: 5px;
+            font-size: 20px;
+            margin-left: 20px;
+        }
+
+        .terminal{
+            position: absolute;
+            top: 100px;
+            left: 40px;
+            width: auto;
+            display: inline-block;
+            margin: 1px;
+        }
+
+        .top-bar {
+            background-color: #3c3b37;
+            padding: 5px;
+            border-top-left-radius: 8px;
+            border-top-right-radius: 8px;
+            height: 30px;
+        }
+
+        .button {
+            width: 20px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 20px;
+            font-weight: bold;
+            color: black;
+            display: inline-block;
+            margin-right: 6px;
+            cursor: pointer;
+        }
+
+        .close {
+            background-color: #ff5f56;
+        }
+
+        .minimize, .zoom{
+            background-color: grey;
+        }
+
+        .info {
+            color: white;
+            display: inline-block;
+            margin-left: 10px;
+        }
+
+        .console {
+            background-color: #2d0634;
+            color: white;
+            padding: 10px;
+            border-bottom-left-radius: 8px;
+            border-bottom-right-radius: 8px;
+            display: block; /* is required in order to do the manual resize */
+            width: 570px;
+            min-width:300px;
+            height: 300px;
+            min-height: 30px;
+            resize: both;
+            overflow: auto;
+            word-break: break-all;
+        }
+
+        span {
+            outline:none;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        .focus-span::after {
+            content: "▯";
+            color: white;
+            background-color: white;
+            font-family: 'DejaVu Sans Mono';
+            font-size: 12px;
+            animation: blink 1s step-end infinite;
+        }
+
+    </style>
+</head>
+
+<body>
+    <button id="open-new-terminal">Open a new Terminal</button>
+    <button id="min-button"> View minimized terminals</button>
+    <br>
+    <div class="terminal">
+        <div class="top-bar">
+            <div class="button close">×</div>
+            <div class="button minimize">–</div>
+            <div class="button zoom">◻</div>
+            <div class="info">howtogeek@ubuntu: ~</div>
+        </div>
+        <div class="console">
+            <span contenteditable="false">howtogeek@ubuntu:~$ </span>
+            <span class="input-span" contenteditable="true"></span>
+        </div>
+    </div>
+
+    <script>
+
+        const emptyTerminal = document.querySelector(".terminal").cloneNode(true);
+        let maxZIndex = 1;
+        let maxId = -1;
+        let activeId = -1;
+
+        class Terminal {
+            static terminals = [];
+
+            constructor(terminalElement){
+
+                Terminal.terminals.push(this);
+
+                this.terminal = terminalElement;
+                maxId++; this.id = maxId;
+                this.isFullScreen = false;
+                this.newInputListener(this.terminal.querySelector('.input-span'));
+                this.closeTerminalListener(this.terminal.querySelector(".button.close"));
+                this.fullScreenListener(this.terminal.querySelector(".button.zoom"));
+                this.minimizeListener(this.terminal.querySelector(".minimize"));
+                this.enableDrag(this.terminal);
+
+                this.onTop();
+                
+                
+                this.terminal.addEventListener('mousedown', () => {
+
+                    if (this.terminal.classList.contains("minimized-term")) { //if the terminal is minimized
+                        this.terminal.classList.remove("minimized-term");
+                        
+                        this.terminal.style.display = "none";
+                        this.terminal.style.position = "absolute";
+                        const buttons = this.terminal.querySelectorAll(".button");
+                        buttons.forEach((button) => {
+                            button.style.display = "inline-block";
+                        });
+                        
+                        minButton.click();
+                    } else {
+                        this.onTop();
+                    }
+                });
+            }
+
+            onTop(){
+                maxZIndex++;
+                this.terminal.style.zIndex = maxZIndex;
+                activeId = this.id;
+                setTimeout(() => { // to make sure that the focus is applied
+                    const element = this.terminal.querySelector('.input-span[contenteditable="true"]');
+                    this.inputFocus(element);
+                }, 0);
+            }
+
+            inputFocus(span){
+
+                Terminal.terminals.forEach((terminal) => {
+                    const focusedSpans = terminal.terminal.querySelectorAll('.focus-span');
+                    focusedSpans.forEach((el) => {
+                        el.classList.remove('focus-span');
+                    });
+                });
+
+                span.classList.add('focus-span');
+                span.focus();
+
+            }
+
+            newInputListener(span){
+                span.addEventListener('keydown', (event)=> {
+                    if (event.key === 'Enter') {
+                        event.preventDefault();
+
+                        const inputValue = span.textContent.trim();
+                        const parent = span.parentNode;
+
+                        if (inputValue.startsWith("echo ")) {
+                            let output = inputValue.slice(5);
+                            
+                            const outputDiv = document.createElement('div');
+                            outputDiv.textContent = output;
+                            span.parentNode.appendChild(outputDiv);
+                            
+                        } else if(inputValue=="clear"){
+                            parent.innerHTML = "";
+                        } else if(inputValue=="time"){
+                            const now = new Date();
+                            const outputDiv = document.createElement('div');
+                            outputDiv.textContent = now.toString();
+                            span.parentNode.appendChild(outputDiv);
+                        }else if(inputValue == "meteoCT") {
+                            const url = "https://api.open-meteo.com/v1/forecast?latitude=37.5&longitude=15.09&current=temperature_2m";
+                
+                            const outputDiv = document.createElement('div');
+                            fetch(url)
+                            .then(response => response.json())
+                            .then(data => {
+                                outputDiv.textContent = "Temperatura attuale a Catania: " + data.current.temperature_2m + " °C";
+                            })
+                            .catch(error => {
+                                outputDiv.textContent = "Errore nella richiesta:"+error;
+                            });
+
+                            span.parentNode.appendChild(outputDiv);
+
+                        }else {
+                            parent.appendChild(document.createElement('br'));
+                        }
+                                          
+                        const promptSpan = document.createElement('span');
+                        promptSpan.textContent = 'howtogeek@ubuntu:~$ ';
+                        promptSpan.setAttribute('contenteditable', 'false');
+
+                        const newInputSpan = document.createElement('span');
+                        newInputSpan.setAttribute('contenteditable', 'true');
+                        newInputSpan.classList.add('input-span');
+
+                        span.setAttribute('contenteditable', 'false'); //così non si può più scrivere negli span editabili precedenti
+                        parent.appendChild(promptSpan);
+                        parent.appendChild(newInputSpan);
+
+                        this.inputFocus(newInputSpan);
+
+                        //aggiunta del listener al nuovo input span
+                        this.newInputListener(newInputSpan);
+                    }
+                });
+            }
+            
+            closeTerminalListener(div) {
+                div.addEventListener("click", ()=> {
+                    const arrayIndex = Terminal.terminals.indexOf(this);
+                    Terminal.terminals.splice(arrayIndex, 1); //rimuovo il riferimento dall'array dei terminali
+                    this.terminal.remove();
+                });
+            }  
+            
+            fullScreenListener(div){
+                div.addEventListener("click", ()=> {
+
+                    let terminalConsole = this.terminal.querySelector(".console");
+                    let topBar = this.terminal.querySelector(".top-bar");
+                    
+                    if(!this.isFullScreen){
+                        this.isFullScreen = true;
+                        this.terminal.style.top = 0;
+                        this.terminal.style.left = 0;
+                        this.terminal.style.margin = 0;
+                    
+                        terminalConsole.style.height = document.documentElement.scrollHeight - topBar.offsetHeight + "px";
+                        
+                        terminalConsole.style.width = "100vw";
+                    } else {
+                        this.isFullScreen = false;
+                        this.terminal.style.top = "20vh"
+                        this.terminal.style.left = "20vw";
+                        this.terminal.style.margin = "1px";
+                        
+                        terminalConsole.style.height = "300px";
+                        terminalConsole.style.width = "570px";
+                    }
+                });
+            }
+
+            minimizeListener(div){
+
+                div.addEventListener("click", ()=>{
+
+                    let terminalConsole = this.terminal.querySelector(".console");
+                    const minHeight = getComputedStyle(terminalConsole)['min-height'];
+                    const minWidth = getComputedStyle(terminalConsole)['min-width'];
+                    
+                    const buttons = this.terminal.querySelectorAll(".button");
+                    buttons.forEach((button) => {
+                        button.style.display = "none";
+                    });
+                    
+                    this.terminal.style.display = "none";
+                    this.terminal.style.position = "relative";
+                    this.terminal.style.left = "250px";
+                    this.terminal.style.top = "10px";
+                    this.terminal.classList.add("minimized-term");
+                    terminalConsole.style.height = minHeight;
+                    terminalConsole.style.width = minWidth;
+                    this.terminal.after(document.createElement('br'));
+                });
+
+            }
+
+            enableDrag(terminal) {
+                const topBar = terminal.querySelector('.top-bar');
+                let isDragging = false;
+                let offsetX = 0;
+                let offsetY = 0;
+
+                topBar.style.cursor = "move";
+
+                topBar.addEventListener('mousedown', (e) => {
+                    isDragging = true;
+                    offsetX = e.clientX - this.terminal.offsetLeft;
+                    offsetY = e.clientY - this.terminal.offsetTop;
+                    document.body.style.userSelect = "none";
+                });
+
+                document.addEventListener('mousemove', (e)=> {
+                    if (isDragging) {
+                        this.terminal.style.left = (e.clientX - offsetX) + 'px';
+                        this.terminal.style.top = (e.clientY - offsetY) + 'px';
+                    }
+                });
+
+                document.addEventListener('mouseup', ()=> {
+                    if(isDragging){
+                        isDragging = false;
+                        document.body.style.userSelect = "";
+                        const element = this.terminal.querySelector('.input-span[contenteditable="true"]');
+                        this.inputFocus(element);
+                    }
+                });
+            }
+        
+        }
+
+        const firstTerminal = new Terminal(document.querySelector(".terminal"));
+
+        const newTerminalButton = document.getElementById("open-new-terminal");
+        newTerminalButton.addEventListener("click", ()=>{
+            const newTerminal = emptyTerminal.cloneNode(true);
+            let topNow, leftNow;
+            for (let terminal of Terminal.terminals) {
+                if(terminal.id == activeId){
+                    topNow = parseInt( getComputedStyle(terminal.terminal).top );
+                    leftNow = parseInt( getComputedStyle(terminal.terminal).left );
+                    newTerminal.style.top = (topNow + 40) + 'px';
+                    newTerminal.style.left = (leftNow + 20) + 'px';
+                }
+            }
+
+            document.body.appendChild(newTerminal);
+            new Terminal(newTerminal)
+        });
+
+        const minButton = document.getElementById("min-button");
+        const firstText = minButton.innerText;
+        const otherText = "Hide minimized terminals";
+
+        minButton.addEventListener("click", () => {
+
+            const allTerminals = document.querySelectorAll(".terminal");
+            allTerminals.forEach((term) => {
+                if (!term.classList.contains("minimized-term")) {
+                    if(minButton.innerText == firstText){
+                        term.style.display = "none";
+                        
+                    }else if(minButton.innerText == otherText) {
+                        term.style.display = "inline-block";
+                        
+                    }  
+                }
+            });
+
+            const minimizedTerminals = document.querySelectorAll(".minimized-term");
+            minimizedTerminals.forEach((term) => {
+                if (minButton.innerText == firstText) {
+                    term.style.display = "inline-block";
+                } else if (minButton.innerText == otherText) {
+                    term.style.display = "none";
+                }
+            });
+
+            if(minButton.innerText == firstText){
+                minButton.textContent = otherText;
+            } else if(minButton.innerText == otherText){
+                minButton.textContent = firstText;
+            }
+
+        });
+
+    </script>
+</body>
+
+</html>

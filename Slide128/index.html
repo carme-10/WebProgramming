@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide 128</title>
+
+    <style>
+        .cornice{
+            display: inline-block;
+            position: relative;
+            border: 1px solid white;
+            
+            width: auto;
+            height: auto;
+
+        }
+
+        .linea_verticale{
+            position: absolute;
+            width: 1px;
+            height: 20%;
+            background-color: red;
+        }
+        .linea_orizzontale{
+            position: absolute;
+            width: 20%;
+            height: 1px;
+            background-color: red;
+        }
+        .cornice>.linea_verticale.left_bottom{
+            top: 80%;
+        }
+        .cornice>.linea_orizzontale.left_bottom{
+            top: 100%;
+        }
+        .cornice>.linea_verticale.left_top{
+            top: 0%;
+        }
+        .cornice>.linea_orizzontale.left_top{
+            top: 0%;
+        }
+        .cornice>.linea_verticale.right_bottom{
+            right: 0%;
+            top: 80%;
+        }
+        .cornice>.linea_orizzontale.right_bottom{
+            right: 0%;
+            top: 100%;
+        }
+        .cornice>.linea_verticale.right_top{
+            right: 0%;
+            top: 0%;
+        }
+        .cornice>.linea_orizzontale.right_top{
+            right: 0%;
+            top: 0%;
+        }
+
+        .cornice>.container {
+            position: relative;
+            display: inline-block;
+            background-color: white;
+            padding: 20px;
+            margin: 10px 10px;
+            border: 1px solid grey;
+            
+            width: auto;
+            height: auto;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="cornice">
+
+        <div class="linea_verticale left_bottom"></div>
+        <div class="linea_orizzontale left_bottom"></div>
+
+        <div class="linea_verticale left_top"></div>
+        <div class="linea_orizzontale left_top"></div>
+
+        <div class="linea_verticale right_bottom"></div>
+        <div class="linea_orizzontale right_bottom"></div>
+
+        <div class="linea_verticale right_top"></div>
+        <div class="linea_orizzontale right_top"></div>
+        
+        <div class="container">
+            <p>Provaaaaaaaaaaaaaa</p>
+            <p>Provaaaaaaaaaaaaaa</p>
+        </div>
+
+    </div>
+
+</body>
+
+</html>

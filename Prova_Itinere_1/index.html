@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title> Prova in itinere</title>
+</head>
+
+<body>
+  <p> Registrazione utente </p>
+  <form>
+    <table border="0">
+      <tr>
+        <td colspan="3">Indirizzo email</td> 
+        <td colspan="3">Conferma indirizzo email</td>
+      </tr>
+      <tr>
+        <td colspan="3"><input type="email" name="email" placeholder="Email" required /></td>
+        <td colspan="3"><input type="email" name="email" placeholder="Email" required /></td>
+      </tr>
+
+      <tr>
+        <td colspan="3">Password</td>
+        <td colspan="3">Conferma Password</td>
+      </tr>
+      <tr>
+        <td colspan="3"><input type="password" name="password" placeholder="Password"required/></td>
+        <td colspan="3"><input type="password" name="password"placeholder="Password"required/></td>
+      </tr>
+
+      <tr>
+        <td colspan="6"> <hr color="red"> </td>
+      </tr>
+
+      <tr>
+        <td colspan="2">Nome</td> 
+        <td colspan="2">Secondo Nome</td>
+        <td colspan="2">Cognome</td>
+      </tr>
+      <tr>
+        <td colspan="2"><input type="text" name="nome" size="10" placeholder="Nome" required/></td>
+        <td colspan="2"><input type="text" name="secondo_nome" placeholder="Secondo Nome" size="10" /></td>
+        <td colspan="2"><input type="text" name="cognome" placeholder="Cognome" size="10" required/></td>
+      </tr>
+      <tr>
+        <td colspan="2">Sesso</td> 
+        <td colspan="4">Città ed Indirizzo</td>
+      </tr>
+      <tr>
+        <td colspan="2">
+          <select name="gender" required>
+              <option selected></option>
+              <option value="Maschio">Maschio</option>
+              <option value="Femmina">Femmina</option>
+          </select>
+        </td>
+        <td colspan="4">
+          <input type="text" name="city_and_address" placeholder="Città e Indirizzo" size="28" required/>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="6"> <hr color="red"> </td>
+      </tr>
+
+      <tr>
+        <td colspan="3">Interessi</td> 
+        <td colspan="3">Sistema utilizzato</td>
+      </tr>
+
+      <tr>
+        <td colspan="3"> 
+          <input type="checkbox" name="interest" value="videogame"> Videogame<br>
+          <input type="checkbox" name="interest" value="arte"> Arte<br>
+          <input type="checkbox" name="interest" value="fotografia"> Fotografia<br>
+          <input type="checkbox" name="interest" value="alcool"> Alcool<br>
+        </td>
+        <td colspan="3">
+          <input type="radio" name="system" value="windows" required> Microsoft Windows<br>
+          <input type="radio" name="system" value="linux"> Linux<br>
+          <input type="radio" name="system" value="mac"> MacOS<br>
+          <input type="radio" name="system" value="dos"> Microsoft DOS<br>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="6"> <hr color="red"> </td>
+      </tr>
+
+      <tr>
+        <td colspan="6" align="center"> Accetti le condizioni?</td>
+      </tr>
+
+      <tr>
+        <td colspan="6" align="center">
+          <input type="checkbox" name="accept" value="yes" required> Accetto<br>
+        </td>
+      </tr>
+
+      <tr>
+        <td colspan="6" align="right">
+          <input type="image" src="/assets/register_button.png" alt="Registrati" width="20%">
+        </td>
+      </tr>
+    
+    </table>
+  </form>
+</body>
+
+</html>

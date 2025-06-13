@@ -1,0 +1,165 @@
+* {
+    box-sizing: border-box;
+}
+
+html, body {
+    margin: 0;
+    padding: 0;
+    background: #061A40;
+    font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+}
+
+.app-title {
+    color: white;
+    text-align: center;
+}
+
+.login{
+    text-align: center;
+    color:  #00a2aa;
+}
+
+.data{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 5px;
+}
+
+.data>input{
+    width: 200px;
+}
+
+.options{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.options>button{
+    width: 95px;
+}
+
+.scelta-ruolo{
+    display: none;
+    color:  #00a2aa;
+    text-align: center;
+    margin-top: 40px;
+}
+
+.my-role{
+    color: rgb(154, 224, 32);
+    text-align: center;
+    margin-bottom: 10px;
+    font-size: 20px;
+}
+
+.my-username{
+    color: white;
+    text-align: center;
+    margin: 15px;
+    font-size: 20px;
+}
+
+.container-principale {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+
+}
+
+.container-principale>.input-container>input {
+    background: #003559;
+    color: white;
+    border: none;
+    padding: 8px;
+    border-radius: 30px;
+    outline: none;
+    margin-right: 8px;
+
+}
+
+.container-principale>.input-container>input:focus {
+    box-shadow: 0px 0px 12px #00a2aa;
+}
+
+.container-principale>.input-container>button {
+    cursor: pointer;
+    color: white;
+    background: linear-gradient(90deg, #38AECC, #0090C1);
+    border: none;
+    height: 31px;
+    border-radius: 31px;
+    padding: 0 14px;
+
+}
+
+.container-principale>.input-container>button:hover {
+    background: linear-gradient(-90deg, #38AECC, #0090C1);
+}
+
+.container-principale>.list-filter {
+    margin: 20px 0;
+    display: flex;
+    gap: 20px;
+
+}
+
+.container-principale>.list-filter>div {
+    cursor: pointer;
+    color: white;
+}
+
+.container-principale>.list-filter>div:hover,
+.container-principale>.list-filter>div.active {
+    text-decoration: underline #38AECC;
+}
+
+.container-principale>.list-elements {
+    display: flex;
+    flex-direction: column;
+    gap: 10px
+}
+
+.container-principale>.list-elements>.list-element {
+    background: #084b63;
+    display: flex;
+    justify-items: start;
+    align-items: center;
+    border-radius: 8px;
+    justify-content: space-between;
+}
+
+.container-principale>.list-elements>.list-element>.icon {
+
+    margin: 16px;
+    color: white;
+    font-weight: bold;
+}
+
+.container-principale>.list-elements>.list-element>.text {
+    color: white;
+}
+
+.container-principale>.list-elements>.list-element>.btn-delete {
+    cursor: pointer;
+    color: red;
+    background: #0b607e;
+    width: 30px;
+    height: 30px;
+    margin: 0 16px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.container-principale>.list-elements>.list-element>.btn-delete:hover {
+    background: #0e7498;
+}
+
+.container-principale>.list-elements>.list-element.hidden {
+    display: none;
+}

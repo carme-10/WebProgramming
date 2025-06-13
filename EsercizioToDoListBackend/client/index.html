@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo App</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <h1 class="app-title">ToDo App</h1>
+
+    <div class="login">
+        <div class="data">
+            <label for="username">Nome utente</label>
+            <input type="text" id="username" name="username">
+            <label for="psw">Password</label>
+            <input type="password" id="psw" name="psw">
+        </div>
+        <div class="options">
+            <button id="sign-in">Accedi</button>
+            <button id="sign-up">Registrati</button>
+        </div>
+    </div>
+
+    <div class="scelta-ruolo">
+        <label for="ruolo">Scegli un ruolo:</label>
+        <select id="ruolo" name="ruolo">
+            <option value="Sviluppatore">Sviluppatore</option>
+            <option value="Designer">Designer</option>
+            <option value="Tester">Tester</option>
+        </select>
+        <button id="scelta-ruolo">Completa registrazione</button>
+    </div>
+
+    <div class="my-role"></div>
+    <div class="my-username"></div>
+
+    <div class="container-principale">
+
+        <div class="input-container">
+            <input type="text" placeholder="Scrivi cose" /> <button>+ Aggiungi</button>
+            <select>
+                <option value="imp">Importante</option>
+                <option value="nonimp">Non Importante</option>
+            </select>
+        </div>
+
+        <div class="list-filter">
+            <div data-categoria="" class="active">All</div>
+            <div data-categoria="imp">Importanti</div>
+            <div data-categoria="nonimp">Non Importanti</div>
+        </div>
+
+        <div class="list-elements">
+
+          <!--  <div class="list-element">
+                <div class="icon">#</div>
+                <div class="text">Voce 1</div>
+                <div class="btn-delete">X</div>
+            </div>
+        -->
+
+        </div>
+
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script src="myscript.js"></script>
+    
+</body>
+</html>

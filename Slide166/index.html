@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Slide 166</title>
+
+    <style>
+
+        .navigation-bar{
+            display: flex;
+            background-color: rgb(0, 195, 255);
+            color: white;
+            font-size: 30px;
+            
+            /* per desktop */
+            flex-direction: row;
+            justify-content: flex-end; /* asse principale quindi x */
+            align-items: center; /* asse perpendicolare al principale quindi y*/
+
+        }
+
+        .navigation-bar > div { /* per i singoli elementi */
+            padding: 10px 20px;
+        }
+
+        @media screen and (max-width: 480px) { /* per mobile */
+
+            .navigation-bar > div {
+                padding: 10px 0px;
+                padding-right: 50vw;
+                padding-left: 50vw;
+                border-bottom: 1px solid white;
+            }
+            .navigation-bar {
+                flex-direction: column;
+                justify-content: center; /* asse principale, quindi y */
+            }
+        }
+
+        @media screen and (min-width: 481px) and (max-width: 768px) { /* per i tablet */
+            .navigation-bar {
+                flex-direction: row;
+                font-size: 16px;
+                justify-content: space-around; /* asse x */
+                align-items: center; /* asse y*/
+            }
+        }
+
+    </style>
+</head>
+<body>
+
+    <div class="navigation-bar"> 
+        <div> Home </div>
+        <div> About </div>
+        <div> Products </div>
+        <div> Contact </div>
+    </div>
+    
+</body>
+</html>
