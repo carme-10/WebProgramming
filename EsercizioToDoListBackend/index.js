@@ -1,4 +1,5 @@
 const express = require("express");
+const session = require('express-session');
 
 const { createServer } = require("http");
 const { Server } = require("socket.io");
@@ -103,6 +104,12 @@ function randomInt(min, max) {
     return Math.floor(Math.random() * (max - min + 1)) + min;
 }
 
+app.use(session({
+    secret: 'qualcheKey',
+    resave: false,
+    saveUninitialized: true
+}));
+
 app.use(express.static("./client"));
 
 app.use(express.urlencoded({extent:false})); //è sbagliato, ho scritto come nelle slide, ma dovrebbe essere extended. Ma visto che false è di default funziona cmq
@@ -118,6 +125,7 @@ app.post("/login", (req, res) => {
     console.log("[RISULTATO]", success);
     Db.print();
     if(success){
+        req.session.username = username;
         const user = Db.users.find(u => u.username === username && u.password === password);
         const ruolo = user.ruolo;
         const socket = io.sockets.sockets.get(socketId); 
@@ -154,13 +162,11 @@ app.post("/registrazione", (req, res) => {
 app.post("/addElement", (req, res) => {
     const { todo } = req.body;
     const { categoria } = req.body;
-    const {socketId} = req.body;
-    const {username, password} = req.body;
 
-    const user = Db.users.find(u => u.username === username && u.password === password);
+    const user = Db.users.find(u => u.username === req.session.username);
     if (user) {
         user.add(todo, categoria);
-        io.to("room-"+user.ruolo).emit('updateList', {todo, categoria, fromSocketId: socketId, type: "add"});
+        io.to("room-"+user.ruolo).emit('updateList', {todo, categoria, type: "add"});
         return res.status(200).json({ success: true});
     } else {
         return res.status(401).json({ success: false, message: "Credenziali errate" });
@@ -170,15 +176,13 @@ app.post("/addElement", (req, res) => {
 app.post("/deleteElement", (req, res) => {
     const { todo } = req.body;
     const { categoria } = req.body;
-    const {username, password} = req.body;
-    const {socketId} = req.body;
 
-    const user = Db.users.find(u => u.username === username && u.password === password);
+    const user = Db.users.find(u => u.username === req.session.username);
     if(user){
 
         if(user.privilegi === ADMIN){
             user.delete(todo, categoria);
-            io.to("room-"+user.ruolo).emit('updateList', {todo, categoria, fromSocketId: socketId, type: "del"});
+            io.to("room-"+user.ruolo).emit('updateList', {todo, categoria, type: "del"});
             return res.status(200).json({ success: true});
         } else {
             return res.status(403).json({ success: false, message: "Permessi non sufficienti" });

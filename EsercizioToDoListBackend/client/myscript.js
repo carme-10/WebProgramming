@@ -17,7 +17,7 @@ const listaGrafica = {
         this.$filterCategories = document.querySelectorAll(".container-principale>.list-filter>div");
 
         this.$buttonElement.addEventListener("click", () => {
-            this.addElement(username, password);
+            this.addElement();
         });
 
         for (const iterato of this.$filterCategories) {
@@ -44,18 +44,18 @@ const listaGrafica = {
         }
     },
 
-    addElement: function (username, password) {
+    addElement: function () {
         const todo = this.$inputElement.value;
         const categoria = this.$select.value;
         fetch('/addElement', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ todo, categoria, socketId: socket.id, username: username, password: password })
+            body: JSON.stringify({ todo, categoria })
         }).then(response => response.json())
             .then(data => {
                 if (data.success) {
                     this.$inputElement.value = "";
-                    this.$listElements.appendChild(this._createElement(todo, categoria));
+                    //this.$listElements.appendChild(this._createElement(todo, categoria));
                 } else {
                     alert("Riprovare, c'è stato un errore");
                 }
@@ -112,11 +112,11 @@ const listaGrafica = {
             fetch('/deleteElement', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ todo: text, categoria, socketId: socket.id, username: username, password: password })
+                body: JSON.stringify({ todo: text, categoria })
             }).then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        newElement.remove();
+                        //newElement.remove();
                     } else {
                         alert(data.message);
                     }
@@ -138,21 +138,15 @@ listaGrafica.init();
 socket.on('updateList', function(data){
     const todo = data.todo;
     const categoria = data.categoria;
-    const fromSocketId = data.fromSocketId;
     const type = data.type;
 
-    if(fromSocketId != socket.id){
-        if(type == "add"){
-            listaGrafica.addElementLocally(todo, categoria);
-        } else if (type == "del"){
-            listaGrafica.deleteElementLocally(todo, categoria);
-        }
-        
+    if(type == "add"){
+        listaGrafica.addElementLocally(todo, categoria);
+    } else if (type == "del"){
+        listaGrafica.deleteElementLocally(todo, categoria);
     }
     
 });
-
-let username, password;
 
 function login(username, password) {
     fetch('/login', {
@@ -183,8 +177,8 @@ function login(username, password) {
 const accediBtn = document.getElementById("sign-in");
 accediBtn.addEventListener("click", () =>{
 
-    username = document.getElementById("username").value;
-    password = document.getElementById("psw").value;
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("psw").value;
 
     login(username, password);
 });
@@ -192,8 +186,6 @@ accediBtn.addEventListener("click", () =>{
 const registratiBtn = document.getElementById("sign-up");
 registratiBtn.addEventListener("click", () =>{
 
-    username = document.getElementById("username").value;
-    password = document.getElementById("psw").value;
     document.querySelector('.login').style.display = 'none';
     document.querySelector('.scelta-ruolo').style.display = "block";
 
@@ -202,6 +194,8 @@ registratiBtn.addEventListener("click", () =>{
 const sceltaRuoloBtn = document.getElementById("scelta-ruolo");
 sceltaRuoloBtn.addEventListener("click", () => {
 
+    const username = document.getElementById("username").value;
+    const password = document.getElementById("psw").value;
     const ruolo = document.getElementById("ruolo").value;
 
     fetch('/registrazione', {
